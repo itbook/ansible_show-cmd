@@ -18,9 +18,7 @@
        auth_pass: "{{ enable_secret }}"
      register: result
 
-   - debug: msg="{{ result.stdout }}"
-
-   - local_action: copy content={{ result.stdout }} dest=./test_{{ name }}.txt
+     #- debug: msg="{{ result.stdout }}"
 
    - name: log write out
      local_action: template src=./cmd.j2 dest=./{{ name }}.log
@@ -43,9 +41,6 @@
        authorize: true
        auth_pass: "{{ enable_secret }}"
      register: result
-
-   - name: sh run output
-     local_action: shell /bin/echo "{{ result.stdout[0] }}" > ./sh_run_{{ name }}.txt
 
    - name: log write out
      local_action: template src=./cmd.j2 dest=./{{ name }}.log
