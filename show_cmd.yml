@@ -1,0 +1,54 @@
+---
+- hosts: cisco
+  gather_facts: no
+  tasks:
+   - name: cisco show command run
+     local_action:
+       module:   ios_command
+       commands:
+         - show run
+         - show int des
+         - show ip ro
+         - show logg
+         - show version
+       host:     "{{ inventory_hostname }}"
+       username: "{{ user }}"
+       password: "{{ password }}"
+       authorize: true
+       auth_pass: "{{ enable_secret }}"
+     register: result
+
+   - debug: msg="{{ result.stdout }}"
+
+   - local_action: copy content={{ result.stdout }} dest=./test_{{ name }}.txt
+
+   - name: log write out
+     local_action: template src=./cmd.j2 dest=./{{ name }}.log
+
+- hosts: arista
+  gather_facts: no
+  tasks:
+   - name: arista show command run
+     local_action:
+       module:   eos_command
+       commands:
+         - show run
+         - show int des
+         - show ip ro
+         - show logg
+         - show version
+       host:     "{{ inventory_hostname }}"
+       username: "{{ user }}"
+       password: "{{ password }}"
+       authorize: true
+       auth_pass: "{{ enable_secret }}"
+     register: result
+
+   - name: sh run output
+     local_action: shell /bin/echo "{{ result.stdout[0] }}" > ./sh_run_{{ name }}.txt
+
+   - name: log write out
+     local_action: template src=./cmd.j2 dest=./{{ name }}.log
+
+
+
